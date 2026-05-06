@@ -1,0 +1,139 @@
+# ============================================================
+# .gitignore — Terraform + AWS | image-processor
+# ============================================================
+# Regla de oro: si un archivo contiene estado real de AWS,
+# credenciales, o datos de entorno específicos → ignorarlo.
+# ============================================================
+
+
+# ── TERRAFORM: Estado (CRÍTICO — nunca subir) ────────────────
+# Contiene IDs de recursos reales, IPs, ARNs, metadatos.
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Directorio de estado por workspace
+terraform.tfstate.d/
+
+# ── TERRAFORM: Directorio de trabajo interno ─────────────────
+# Providers descargados, módulos cacheados, plugins.
+# Pesa cientos de MB y se regenera con `terraform init`.
+.terraform/
+.terraform.lock.hcl
+
+# ── TERRAFORM: Archivos de plan binario ──────────────────────
+# Planes guardados con `terraform plan -out=...`
+# Pueden contener valores sensibles en texto plano.
+*.tfplan
+*.tfplan.*
+tfplan-*.tfplan
+
+# ── TERRAFORM: Variables de entorno (CRÍTICO) ────────────────
+# Los .tfvars pueden tener emails, nombres de cuenta,
+# configuraciones propias de cada desarrollador.
+*.tfvars
+*.tfvars.json
+
+# Excepción: los archivos de ejemplo son seguros para compartir.
+# Descomentar si creas archivos .tfvars.example en tu repo:
+# !*.tfvars.example
+# !*.tfvars.example.json
+
+# ── TERRAFORM: Archivos de override ──────────────────────────
+# Usados para sobrescribir config localmente sin tocar el repo.
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# ── TERRAFORM: Archivos temporales de módulos ────────────────
+.terraformrc
+terraform.rc
+
+# ── AWS: Credenciales y configuración ────────────────────────
+# Por si alguien copia la carpeta ~/.aws dentro del proyecto.
+.aws/
+credentials
+aws-credentials*
+*_credentials.json
+
+# ── LAMBDA: Artefactos de build ──────────────────────────────
+# ZIPs generados por archive_file o por el build de Node.js.
+*.zip
+!modules/compute/*.zip  # Los placeholders generados por Terraform sí son locales
+
+# Dependencias de Node.js (no subir node_modules de Lambdas)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ── SISTEMA OPERATIVO ────────────────────────────────────────
+# Manjaro / Linux
+.directory
+.Trash-*
+
+# macOS (por si colaboras con alguien en Mac)
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows (por si hay colaboradores en Windows)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── EDITORES E IDEs ──────────────────────────────────────────
+# VS Code — carpeta de workspace personal
+.vscode/
+!.vscode/extensions.json   # Excepción: recomendaciones de extensiones sí son útiles
+!.vscode/settings.json     # Excepción: settings de formato del proyecto (opcional)
+
+# JetBrains (IntelliJ, GoLand, etc.)
+.idea/
+*.iml
+*.iws
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# ── LOGS Y TEMPORALES ────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+crash.log
+crash.*.log
+
+# ── SEGURIDAD: Claves y secretos ─────────────────────────────
+# Por si alguien guarda claves SSH o PEM en el proyecto.
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*_rsa
+*_rsa.pub
+
+# ── ENTORNOS LOCALES ─────────────────────────────────────────
+.env
+.env.*
+!.env.example   # El archivo de ejemplo sí puede subirse
+
+# ── PYTHON (si usas scripts de utilidad) ────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+venv/
+.venv/
