@@ -1,0 +1,20 @@
+# variables.tf
+variable "name_prefix"            { type = string }
+variable "environment"            { type = string }
+variable "aws_region"             { type = string }
+variable "vpc_id"                 { type = string }
+variable "private_subnet_ids"     { type = list(string) }
+variable "upload_lambda_role_arn" { type = string }
+variable "crop_lambda_role_arn"   { type = string }
+variable "bucket_name"            { type = string }
+variable "bucket_arn"             { type = string }
+variable "sqs_queue_arn"          { type = string }
+variable "sqs_queue_url"          { type = string }
+variable "upload_lambda_memory"   { type = number }
+variable "upload_lambda_timeout"  { type = number }
+variable "crop_lambda_memory"     { type = number }
+variable "crop_lambda_timeout"    { type = number }
+variable "crop_sqs_batch_size"    { type = number }
+variable "api_throttle_rate"      { type = number }
+variable "api_throttle_burst"     { type = number }
+variable "log_retention_days"     { type = number }
