@@ -1,7 +1,5 @@
 # AWS + Lambda Integration
 
-## Arquitectura
-
 - API Gateway HTTP v2
 - AWS Lambda (Node.js 20.x) — upload-lambda y crop-lambda
 - Amazon SQS (cola principal + Dead-Letter Queue)
@@ -47,12 +45,10 @@ export API_URL=$(terraform output -raw api_endpoint_url)
 curl -X POST "$API_URL" -H "Content-Type: application/json" -d '{"test": "ok"}' -v
 ```
 
-Respuesta esperada: HTTP 200.
-
 ## Limpieza
 
 ```
 terraform destroy -var-file="envs/dev/terraform.tfvars"
 ```
 
-Reemplazar el `var-file` según el entorno a destruir. Las evidencias del despliegue y destrucción se adjuntan en el informe PDF.
+Reemplazar el `var-file` según el entorno a destruir.
