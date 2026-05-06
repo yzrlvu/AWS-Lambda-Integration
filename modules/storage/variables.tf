@@ -1,4 +1,3 @@
-# variables.tf
 variable "name_prefix"              { type = string }
 variable "environment"              { type = string }
 variable "uploads_lifecycle_days"   { type = number }

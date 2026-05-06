@@ -15,15 +15,6 @@ terraform {
       version = "~> 3.6"
     }
   }
-
-  # Descomenta y configura un backend remoto para trabajo en equipo:
-  # backend "s3" {
-  #   bucket         = "my-terraform-state-bucket"
-  #   key            = "image-processor/${var.environment}/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   dynamodb_table = "terraform-lock"
-  #   encrypt        = true
-  # }
 }
 
 provider "aws" {

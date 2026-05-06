@@ -1,4 +1,3 @@
-# variables.tf
 variable "name_prefix"         { type = string }
 variable "sqs_dlq_name"        { type = string }
 variable "log_retention_days"  { type = number }

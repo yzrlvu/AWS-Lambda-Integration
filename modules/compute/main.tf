@@ -1,12 +1,3 @@
-# ─────────────────────────────────────────────
-# MODULE: compute
-# upload-lambda, crop-lambda, API Gateway HTTP v2,
-# Security Groups y Event Source Mapping.
-# ─────────────────────────────────────────────
-
-# ── Placeholder ZIP para upload-lambda ────────
-# En producción real: usa aws_s3_object + source_code_hash
-# o un CI/CD pipeline que sube el artefacto.
 data "archive_file" "upload_lambda_placeholder" {
   type        = "zip"
   output_path = "${path.module}/upload_placeholder.zip"
@@ -42,7 +33,6 @@ data "archive_file" "crop_lambda_placeholder" {
   }
 }
 
-# ── Security Groups ───────────────────────────
 resource "aws_security_group" "upload_lambda" {
   name        = "${var.name_prefix}-sg-upload-lambda"
   description = "upload-lambda: sin inbound, outbound HTTPS."
@@ -75,7 +65,6 @@ resource "aws_security_group" "crop_lambda" {
   tags = { Name = "${var.name_prefix}-sg-crop-lambda" }
 }
 
-# ── CloudWatch Log Groups ─────────────────────
 resource "aws_cloudwatch_log_group" "upload_lambda" {
   name              = "/aws/lambda/${var.name_prefix}-upload"
   retention_in_days = var.log_retention_days
@@ -91,7 +80,6 @@ resource "aws_cloudwatch_log_group" "api_gateway" {
   retention_in_days = var.log_retention_days
 }
 
-# ── upload-lambda ─────────────────────────────
 resource "aws_lambda_function" "upload" {
   function_name    = "${var.name_prefix}-upload"
   role             = var.upload_lambda_role_arn
@@ -119,7 +107,6 @@ resource "aws_lambda_function" "upload" {
   tags       = { Name = "${var.name_prefix}-upload" }
 }
 
-# ── crop-lambda ───────────────────────────────
 resource "aws_lambda_function" "crop" {
   function_name    = "${var.name_prefix}-crop"
   role             = var.crop_lambda_role_arn
@@ -147,7 +134,6 @@ resource "aws_lambda_function" "crop" {
   tags       = { Name = "${var.name_prefix}-crop" }
 }
 
-# ── ESM: SQS → crop-lambda ────────────────────
 resource "aws_lambda_event_source_mapping" "sqs_to_crop" {
   event_source_arn                   = var.sqs_queue_arn
   function_name                      = aws_lambda_function.crop.arn
@@ -162,7 +148,6 @@ resource "aws_lambda_event_source_mapping" "sqs_to_crop" {
   }
 }
 
-# ── API Gateway HTTP v2 ───────────────────────
 resource "aws_apigatewayv2_api" "http" {
   name          = "${var.name_prefix}-http-api"
   protocol_type = "HTTP"

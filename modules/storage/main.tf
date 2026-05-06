@@ -1,13 +1,7 @@
-# ─────────────────────────────────────────────
-# MODULE: storage
-# S3 Bucket (uploads + processed) y SQS (main + DLQ)
-# ─────────────────────────────────────────────
-
 resource "random_id" "suffix" {
   byte_length = 4
 }
 
-# ── S3 Bucket ────────────────────────────────
 resource "aws_s3_bucket" "images" {
   bucket        = "${var.name_prefix}-images-${random_id.suffix.hex}"
   force_destroy = var.environment != "prod" # Protección en prod
@@ -55,7 +49,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "images" {
   }
 }
 
-# ── SQS DLQ ──────────────────────────────────
 resource "aws_sqs_queue" "dlq" {
   name                      = "${var.name_prefix}-image-dlq"
   message_retention_seconds = var.sqs_dlq_retention
@@ -63,7 +56,6 @@ resource "aws_sqs_queue" "dlq" {
   tags = { Name = "${var.name_prefix}-image-dlq" }
 }
 
-# ── SQS Main Queue ────────────────────────────
 resource "aws_sqs_queue" "main" {
   name                       = "${var.name_prefix}-image-queue"
   visibility_timeout_seconds = var.sqs_visibility_timeout
@@ -78,7 +70,6 @@ resource "aws_sqs_queue" "main" {
   tags = { Name = "${var.name_prefix}-image-queue" }
 }
 
-# ── S3 → SQS Event Notification ───────────────
 resource "aws_sqs_queue_policy" "allow_s3_notify" {
   queue_url = aws_sqs_queue.main.id
 

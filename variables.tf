@@ -1,7 +1,3 @@
-# ─────────────────────────────────────────────
-# VARIABLES GLOBALES — image-processor
-# ─────────────────────────────────────────────
-
 variable "aws_region" {
   description = "Región de AWS donde se despliega la infraestructura."
   type        = string
@@ -23,7 +19,6 @@ variable "environment" {
   }
 }
 
-# ── Networking ────────────────────────────────
 variable "vpc_cidr" {
   description = "CIDR block del VPC."
   type        = string
@@ -48,7 +43,6 @@ variable "availability_zones" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
-# ── Lambda: upload-lambda ─────────────────────
 variable "upload_lambda_memory" {
   description = "Memoria en MB para upload-lambda."
   type        = number
@@ -61,7 +55,6 @@ variable "upload_lambda_timeout" {
   default     = 30
 }
 
-# ── Lambda: crop-lambda ───────────────────────
 variable "crop_lambda_memory" {
   description = "Memoria en MB para crop-lambda."
   type        = number
@@ -80,7 +73,6 @@ variable "crop_sqs_batch_size" {
   default     = 5
 }
 
-# ── SQS ──────────────────────────────────────
 variable "sqs_visibility_timeout" {
   description = "Visibility timeout en segundos para la cola principal (debe ser 6x el timeout de crop-lambda)."
   type        = number
@@ -105,7 +97,6 @@ variable "sqs_max_receive_count" {
   default     = 3
 }
 
-# ── S3 ────────────────────────────────────────
 variable "uploads_lifecycle_days" {
   description = "Días hasta que expiran los objetos en el prefijo uploads/."
   type        = number
@@ -118,7 +109,6 @@ variable "processed_lifecycle_days" {
   default     = 90
 }
 
-# ── API Gateway ───────────────────────────────
 variable "api_throttle_rate" {
   description = "Rate limit en requests por segundo para API Gateway."
   type        = number
@@ -131,7 +121,6 @@ variable "api_throttle_burst" {
   default     = 5000
 }
 
-# ── CloudWatch ────────────────────────────────
 variable "log_retention_days" {
   description = "Retención de logs de CloudWatch en días."
   type        = number

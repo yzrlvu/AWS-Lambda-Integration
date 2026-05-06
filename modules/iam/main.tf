@@ -1,9 +1,3 @@
-# ─────────────────────────────────────────────
-# MODULE: iam
-# Roles y políticas de mínimo privilegio para
-# upload-lambda y crop-lambda.
-# ─────────────────────────────────────────────
-
 data "aws_iam_policy_document" "lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -14,7 +8,6 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-# ── Rol: upload-lambda ───────────────────────
 resource "aws_iam_role" "upload_lambda" {
   name               = "${var.name_prefix}-upload-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -44,7 +37,6 @@ resource "aws_iam_role_policy" "upload_s3" {
   })
 }
 
-# ── Rol: crop-lambda ─────────────────────────
 resource "aws_iam_role" "crop_lambda" {
   name               = "${var.name_prefix}-crop-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json

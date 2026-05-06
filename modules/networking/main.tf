@@ -1,10 +1,3 @@
-# ─────────────────────────────────────────────
-# MODULE: networking
-# VPC, subredes públicas/privadas, IGW, NAT GWs,
-# tablas de rutas y VPC Endpoints.
-# ─────────────────────────────────────────────
-
-# ── VPC ───────────────────────────────────────
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -13,13 +6,11 @@ resource "aws_vpc" "main" {
   tags = { Name = "${var.name_prefix}-vpc" }
 }
 
-# ── Internet Gateway ──────────────────────────
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
   tags   = { Name = "${var.name_prefix}-igw" }
 }
 
-# ── Subredes Públicas ─────────────────────────
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = aws_vpc.main.id
@@ -30,7 +21,6 @@ resource "aws_subnet" "public" {
   tags = { Name = "${var.name_prefix}-public-${var.availability_zones[count.index]}" }
 }
 
-# ── Subredes Privadas ─────────────────────────
 resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidrs)
   vpc_id            = aws_vpc.main.id
@@ -40,7 +30,6 @@ resource "aws_subnet" "private" {
   tags = { Name = "${var.name_prefix}-private-${var.availability_zones[count.index]}" }
 }
 
-# ── Elastic IPs para NAT ──────────────────────
 resource "aws_eip" "nat" {
   count  = length(var.public_subnet_cidrs)
   domain = "vpc"
@@ -48,7 +37,6 @@ resource "aws_eip" "nat" {
   tags = { Name = "${var.name_prefix}-eip-nat-${count.index}" }
 }
 
-# ── NAT Gateways (uno por AZ — alta disponibilidad) ──
 resource "aws_nat_gateway" "nat" {
   count         = length(var.public_subnet_cidrs)
   allocation_id = aws_eip.nat[count.index].id
@@ -58,7 +46,6 @@ resource "aws_nat_gateway" "nat" {
   depends_on = [aws_internet_gateway.igw]
 }
 
-# ── Tabla de rutas pública ────────────────────
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -76,7 +63,6 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# ── Tablas de rutas privadas (una por AZ → su NAT) ──
 resource "aws_route_table" "private" {
   count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
@@ -95,7 +81,6 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private[count.index].id
 }
 
-# ── Security Group: VPC Endpoint SQS ─────────
 resource "aws_security_group" "vpce_sqs" {
   name        = "${var.name_prefix}-sg-vpce-sqs"
   description = "Permite TCP 443 desde las Lambdas hacia el VPC Endpoint de SQS."
@@ -122,7 +107,6 @@ resource "aws_security_group" "vpce_sqs" {
   tags = { Name = "${var.name_prefix}-sg-vpce-sqs" }
 }
 
-# ── Security Group: upload-lambda ────────────
 resource "aws_security_group" "upload_lambda" {
   name        = "${var.name_prefix}-sg-upload-lambda"
   description = "SG de upload-lambda: sin inbound, outbound HTTPS al VPC Endpoint."
@@ -140,7 +124,6 @@ resource "aws_security_group" "upload_lambda" {
   tags = { Name = "${var.name_prefix}-sg-upload-lambda" }
 }
 
-# ── Security Group: crop-lambda ───────────────
 resource "aws_security_group" "crop_lambda" {
   name        = "${var.name_prefix}-sg-crop-lambda"
   description = "SG de crop-lambda: sin inbound, outbound HTTPS al VPC Endpoint."
@@ -157,7 +140,6 @@ resource "aws_security_group" "crop_lambda" {
   tags = { Name = "${var.name_prefix}-sg-crop-lambda" }
 }
 
-# ── VPC Endpoint: S3 Gateway (sin costo, sin ENI) ──
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.main.id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
@@ -177,7 +159,6 @@ resource "aws_vpc_endpoint" "s3" {
   tags = { Name = "${var.name_prefix}-vpce-s3" }
 }
 
-# ── VPC Endpoint: SQS Interface (ENI por AZ) ──
 resource "aws_vpc_endpoint" "sqs" {
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.${data.aws_region.current.name}.sqs"

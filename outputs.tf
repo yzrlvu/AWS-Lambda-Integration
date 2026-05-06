@@ -1,8 +1,3 @@
-# ─────────────────────────────────────────────
-# OUTPUTS — image-processor
-# ─────────────────────────────────────────────
-
-# ── Endpoint público ──────────────────────────
 output "api_endpoint_url" {
   description = "URL pública del endpoint POST /upload de API Gateway. Usar para probar la aplicación."
   value       = "${module.compute.api_gateway_url}/upload"
@@ -13,7 +8,6 @@ output "api_gateway_id" {
   value       = module.compute.api_gateway_id
 }
 
-# ── S3 ────────────────────────────────────────
 output "s3_bucket_name" {
   description = "Nombre del bucket S3 de imágenes."
   value       = module.storage.bucket_name
@@ -24,7 +18,6 @@ output "s3_bucket_arn" {
   value       = module.storage.bucket_arn
 }
 
-# ── SQS ──────────────────────────────────────
 output "sqs_main_queue_url" {
   description = "URL de la cola SQS principal."
   value       = module.storage.sqs_queue_url
@@ -35,7 +28,6 @@ output "sqs_dlq_url" {
   value       = module.storage.sqs_dlq_url
 }
 
-# ── Lambdas ───────────────────────────────────
 output "upload_lambda_arn" {
   description = "ARN de upload-lambda."
   value       = module.compute.upload_lambda_arn
@@ -46,7 +38,6 @@ output "crop_lambda_arn" {
   value       = module.compute.crop_lambda_arn
 }
 
-# ── Red ───────────────────────────────────────
 output "vpc_id" {
   description = "ID del VPC."
   value       = module.networking.vpc_id
@@ -62,7 +53,6 @@ output "public_subnet_ids" {
   value       = module.networking.public_subnet_ids
 }
 
-# ── IAM ───────────────────────────────────────
 output "upload_lambda_role_arn" {
   description = "ARN del rol IAM de upload-lambda."
   value       = module.iam.upload_lambda_role_arn
@@ -73,13 +63,11 @@ output "crop_lambda_role_arn" {
   value       = module.iam.crop_lambda_role_arn
 }
 
-# ── Observabilidad ────────────────────────────
 output "cloudwatch_alarm_arn" {
   description = "ARN del CloudWatch Alarm de DLQ."
   value       = module.observability.dlq_alarm_arn
 }
 
-# ── Resumen de entorno ────────────────────────
 output "deployment_summary" {
   description = "Resumen del despliegue para incluir en el informe."
   value = {

@@ -1,13 +1,7 @@
-# ─────────────────────────────────────────────
-# MAIN — image-processor
-# Orquesta todos los módulos de la arquitectura.
-# ─────────────────────────────────────────────
-
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 }
 
-# ── 1. Networking ─────────────────────────────
 module "networking" {
   source = "./modules/networking"
 
@@ -18,7 +12,6 @@ module "networking" {
   availability_zones   = var.availability_zones
 }
 
-# ── 2. IAM Roles ─────────────────────────────
 module "iam" {
   source = "./modules/iam"
 
@@ -28,7 +21,6 @@ module "iam" {
   sqs_dlq_arn      = module.storage.sqs_dlq_arn
 }
 
-# ── 3. Storage (S3 + SQS) ────────────────────
 module "storage" {
   source = "./modules/storage"
 
@@ -42,7 +34,6 @@ module "storage" {
   sqs_max_receive_count    = var.sqs_max_receive_count
 }
 
-# ── 4. Compute (Lambdas + API Gateway) ────────
 module "compute" {
   source = "./modules/compute"
 
@@ -81,7 +72,6 @@ module "compute" {
   depends_on = [module.networking, module.iam, module.storage]
 }
 
-# ── 5. Observabilidad (CloudWatch + SNS) ──────
 module "observability" {
   source = "./modules/observability"
 
