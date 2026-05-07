@@ -83,6 +83,7 @@ module "observability" {
   upload_lambda_name = module.compute.upload_lambda_name
   crop_lambda_name   = module.compute.crop_lambda_name
   api_gateway_id     = module.compute.api_gateway_id
+  aws_region         = var.aws_region
 
   depends_on = [module.storage, module.compute]
 }
