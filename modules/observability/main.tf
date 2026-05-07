@@ -63,6 +63,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           title  = "Lambda Invocations"
+          region = var.aws_region
           period = 60
           metrics = [
             ["AWS/Lambda", "Invocations", "FunctionName", var.upload_lambda_name],
@@ -74,6 +75,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           title  = "Lambda Errors"
+          region = var.aws_region
           period = 60
           metrics = [
             ["AWS/Lambda", "Errors", "FunctionName", var.upload_lambda_name],
@@ -85,6 +87,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           title  = "SQS Messages"
+          region = var.aws_region
           period = 60
           metrics = [
             ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", "${replace(var.sqs_dlq_name, "-dlq", "-queue")}"],

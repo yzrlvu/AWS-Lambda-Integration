@@ -183,7 +183,6 @@ resource "aws_apigatewayv2_stage" "default" {
       routeKey       = "$context.routeKey"
       status         = "$context.status"
       responseLength = "$context.responseLength"
-      integrationError = "$context.integrationError"
     })
   }
 }
