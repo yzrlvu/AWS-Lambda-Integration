@@ -86,17 +86,6 @@ resource "aws_security_group" "vpce_sqs" {
   description = "Permite TCP 443 desde las Lambdas hacia el VPC Endpoint de SQS."
   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    description = "HTTPS desde upload-lambda"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    security_groups = [
-      aws_security_group.upload_lambda.id,
-      aws_security_group.crop_lambda.id,
-    ]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -105,39 +94,6 @@ resource "aws_security_group" "vpce_sqs" {
   }
 
   tags = { Name = "${var.name_prefix}-sg-vpce-sqs" }
-}
-
-resource "aws_security_group" "upload_lambda" {
-  name        = "${var.name_prefix}-sg-upload-lambda"
-  description = "SG de upload-lambda: sin inbound, outbound HTTPS al VPC Endpoint."
-  vpc_id      = aws_vpc.main.id
-
-  # Sin reglas de entrada (Lambda no recibe conexiones directas)
-  egress {
-    description = "HTTPS a S3 Gateway Endpoint y SQS Interface Endpoint"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "${var.name_prefix}-sg-upload-lambda" }
-}
-
-resource "aws_security_group" "crop_lambda" {
-  name        = "${var.name_prefix}-sg-crop-lambda"
-  description = "SG de crop-lambda: sin inbound, outbound HTTPS al VPC Endpoint."
-  vpc_id      = aws_vpc.main.id
-
-  egress {
-    description = "HTTPS a S3 y SQS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "${var.name_prefix}-sg-crop-lambda" }
 }
 
 resource "aws_vpc_endpoint" "s3" {
